@@ -277,6 +277,7 @@ input { font: inherit; }
 .tab.active { color: var(--fg); border-bottom-color: var(--gold); }
 
 .tab-panel { display: flex; flex-direction: column; gap: 14px; }
+.tab-panel[hidden] { display: none; }   /* 🟣 fuerza que hidden oculte cada formulario */
 .tab-panel h2 { font-size: 22px; margin-bottom: 4px; }
 .tab-panel input {
   padding: 14px;
