@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<!--
+  Novaflowia — versão vanilla (HTML + CSS + JS puro)
+  Esta página é a versão didática da loja. Cada elemento abaixo está comentado
+  explicando POR QUE existe e PARA QUE serve. Ideal para estudar a arquitetura
+  antes de migrar para o app React/TanStack que está na pasta principal.
+-->
+<html lang="pt-BR">
+<head>
+  <!-- charset + viewport: obrigatórios para acentos e responsividade mobile -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- SEO básico: title curto com palavra-chave, description com proposta -->
+  <title>Novaflowia — Joias, Relógios e Bolsas de Luxo</title>
+  <meta name="description" content="Boutique digital Novaflowia. Joias, relógios e bolsas em parcelas sem juros e entrega assegurada." />
+
+  <!-- Fontes premium carregadas via Google Fonts (Playfair = títulos, Inter = corpo) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- CSS da loja. Mantemos um único arquivo para facilitar o estudo. -->
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Cliente Supabase via CDN (não precisa de bundler). -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+
+<body>
+  <!--
+    HEADER fixo no topo. Contém:
+    - botão hambúrguer (mobile)
+    - logo central (identidade da marca)
+    - ícones: busca, conta, sacola (com contador)
+    O header é sticky para que a sacola esteja sempre acessível (aumenta conversão).
+  -->
+  <header class="site-header">
+    <div class="container header-row">
+      <!-- Botão hambúrguer SÓLIDO (visível, profissional, não transparente) -->
+      <button id="menuBtn" class="icon-btn menu-btn" aria-label="Abrir menu">
+        <!-- SVG inline = sem requisição extra -->
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25">
+          <path d="M3 6h18M3 12h18M3 18h18" />
+        </svg>
+      </button>
+
+      <!-- Logo: link para a home -->
+      <a href="/" class="brand">NOVAFLOWIA</a>
+
+      <!-- Navegação desktop (escondida no mobile via CSS) -->
+      <nav class="desktop-nav">
+        <a href="#colecao">Coleção</a>
+        <a href="#joias">Joias</a>
+        <a href="#relogios">Relógios</a>
+        <a href="#bolsas">Bolsas</a>
+      </nav>
+
+      <!-- Ações: busca, conta, sacola -->
+      <div class="header-actions">
+        <button id="searchBtn" class="icon-btn" aria-label="Buscar">🔍</button>
+        <a id="accountBtn" href="#auth" class="icon-btn" aria-label="Conta">👤</a>
+        <button id="cartBtn" class="icon-btn cart-btn" aria-label="Sacola">
+          🛍 <span id="cartCount" class="cart-count" hidden>0</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Barra de busca (toggle por JS) -->
+    <div id="searchBar" class="search-bar" hidden>
+      <div class="container">
+        <input id="searchInput" type="search" placeholder="Buscar produtos, coleções..." />
+      </div>
+    </div>
+  </header>
+
+  <!-- DRAWER do menu mobile (aberto via JS) -->
+  <aside id="mobileMenu" class="drawer" hidden>
+    <div class="drawer-backdrop" data-close="menu"></div>
+    <div class="drawer-panel left">
+      <header class="drawer-head">
+        <span class="brand small">NOVAFLOWIA</span>
+        <button class="icon-btn" data-close="menu" aria-label="Fechar">✕</button>
+      </header>
+      <nav class="drawer-nav">
+        <a href="#colecao" data-close="menu">Coleção</a>
+        <a href="#joias" data-close="menu">Joias</a>
+        <a href="#relogios" data-close="menu">Relógios</a>
+        <a href="#bolsas" data-close="menu">Bolsas</a>
+      </nav>
+      <div class="drawer-foot">
+        <a id="drawerAuthLink" href="#auth" data-close="menu">Entrar / Cadastrar</a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- HERO: primeira impressão de luxo. Imagem grande + headline + CTA. -->
+  <section class="hero">
+    <div class="hero-text container">
+      <p class="eyebrow">Edição Limitada</p>
+      <h1>Tempo, ouro<br/>e desejo.</h1>
+      <p class="hero-sub">A nova coleção Novaflowia chegou. Peças assinadas, entrega assegurada e parcelamento sem juros.</p>
+      <a href="#colecao" class="cta">Ver coleção</a>
+    </div>
+  </section>
+
+  <!-- GRID de produtos: renderizado dinamicamente em JS a partir do Supabase -->
+  <main id="colecao" class="container section">
+    <header class="section-head">
+      <p class="eyebrow gold">Coleção atual</p>
+      <h2>Selecionadas para você</h2>
+    </header>
+    <div id="productGrid" class="grid">
+      <!-- Os <article class="card"> são injetados via JS (renderProducts) -->
+      <p id="loadingMsg" class="muted">Carregando produtos…</p>
+    </div>
+  </main>
+
+  <!--
+    DRAWER da SACOLA (lado direito).
+    Contém lista de itens, botão REMOVER visível e total em tempo real.
+  -->
+  <aside id="cartDrawer" class="drawer" hidden>
+    <div class="drawer-backdrop" data-close="cart"></div>
+    <div class="drawer-panel right">
+      <header class="drawer-head">
+        <h2 class="display">Sua sacola</h2>
+        <button class="icon-btn" data-close="cart" aria-label="Fechar">✕</button>
+      </header>
+      <div id="cartItems" class="cart-items">
+        <p class="muted center">Sua sacola está vazia.</p>
+      </div>
+      <footer id="cartFooter" class="cart-foot" hidden>
+        <div class="row">
+          <span class="eyebrow">Subtotal</span>
+          <span id="cartSubtotal" class="display total">R$ 0,00</span>
+        </div>
+        <p id="cartParcel" class="muted small"></p>
+        <button id="checkoutBtn" class="btn-primary">Finalizar compra</button>
+      </footer>
+    </div>
+  </aside>
+
+  <!--
+    MODAL de AUTENTICAÇÃO (login + cadastro + recuperação).
+    Usa abas para alternar entre os modos. Cadastro vai direto para a home.
+  -->
+  <div id="authModal" class="modal" hidden>
+    <div class="modal-backdrop" data-close="auth"></div>
+    <div class="modal-card">
+      <button class="icon-btn modal-close" data-close="auth" aria-label="Fechar">✕</button>
+
+      <!-- Abas -->
+      <div class="tabs">
+        <button class="tab active" data-tab="login">Entrar</button>
+        <button class="tab" data-tab="signup">Criar conta</button>
+        <button class="tab" data-tab="forgot">Recuperar</button>
+      </div>
+
+      <!-- Aba LOGIN -->
+      <form id="loginForm" class="tab-panel">
+        <h2 class="display">Bem-vindo de volta</h2>
+        <input name="email" type="email" required placeholder="E-mail" />
+        <input name="password" type="password" required placeholder="Senha" />
+        <button class="btn-primary" type="submit">Entrar</button>
+        <button type="button" class="link" data-goto="forgot">Esqueci minha senha</button>
+      </form>
+
+      <!-- Aba CADASTRO (só campos de cadastro, nada de login no meio) -->
+      <form id="signupForm" class="tab-panel" hidden>
+        <h2 class="display">Criar conta</h2>
+        <input name="nome" type="text" required placeholder="Nome completo" />
+        <input name="email" type="email" required placeholder="E-mail" />
+        <input name="password" type="password" required minlength="6" placeholder="Senha (mín. 6 caracteres)" />
+        <button class="btn-primary" type="submit">Cadastrar</button>
+        <p class="muted small">Após o cadastro você será levado para a página inicial.</p>
+      </form>
+
+      <!-- Aba RECUPERAR SENHA -->
+      <form id="forgotForm" class="tab-panel" hidden>
+        <h2 class="display">Recuperar senha</h2>
+        <p class="muted small">Enviaremos um link de redefinição para seu e-mail.</p>
+        <input name="email" type="email" required placeholder="E-mail cadastrado" />
+        <button class="btn-primary" type="submit">Enviar link</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast de feedback (mensagens curtas) -->
+  <div id="toast" class="toast" hidden></div>
+
+  <!-- FOOTER institucional -->
+  <footer class="site-footer">
+    <div class="container">
+      <p class="brand small">NOVAFLOWIA</p>
+      <p class="muted small">© <span id="year"></span> Novaflowia. Todos os direitos reservados.</p>
+    </div>
+  </footer>
+
+  <!-- Lógica da loja (carrinho + Supabase + auth + render) -->
+  <script src="script.js"></script>
+</body>
+</html>
