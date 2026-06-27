@@ -11,7 +11,7 @@
    IMPORTANTE — substitua estas duas constantes pelos seus valores:
    (encontre em Lovable Cloud → Backend → Connection Info).
    ========================================================= */
-const SUPABASE_URLhttps = 'https://myfnhisnxlkagusgjhwt.supabase.co  //myfnhisnxlkagusgjhwt.supabase.coex.: https://xxxx.supabase.co';
+const SUPABASE_URL = 'https://myfnhisnxlkagusgjhwt.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im15Zm5oaXNueGxrYWd1c2dqaHd0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NjE5NjYsImV4cCI6MjA5ODEzNzk2Nn0.qkoYXxUOQpRRJTPZhEJ5GcR0S57WbMA6z-pDQiYQWnk';   // chave "anon / publishable"
 
 // Cria o cliente. O `?.` evita crash caso o script falhe a carregar do CDN.
