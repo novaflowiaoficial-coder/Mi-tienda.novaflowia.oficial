@@ -11,6 +11,8 @@
    IMPORTANTE — substitua estas duas constantes pelos seus valores:
    (encontre em Lovable Cloud → Backend → Connection Info).
    ========================================================= */
+ if (!window.novaflowiaLoaded) {
+window.novaflowiaLoaded = true;
 const SUPABASE_URL = 'https://myfnhisnxlkagusgjhwt.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im15Zm5oaXNueGxrYWd1c2dqaHd0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NjE5NjYsImV4cCI6MjA5ODEzNzk2Nn0.qkoYXxUOQpRRJTPZhEJ5GcR0S57WbMA6z-pDQiYQWnk';   // chave "anon / publishable"
 
@@ -335,3 +337,4 @@ updateCartCount();
 renderCart();
 loadProducts();
 refreshAuthUI();
+ }
