@@ -1,68 +1,62 @@
-     /* =========================================================
-   Novaflowia — dashboard.css
-   Estilos exclusivos del panel de administración.
-   ========================================================= */
+     <!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Painel Admin — Novaflowia</title>
 
-body { background: var(--bg); }
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="dashboard.css" />
 
-/* Stats */
-.stats-row {
-  display: flex; gap: 16px;
-  margin: 24px 0; flex-wrap: wrap;
-}
-.stat-box {
-  flex: 1; min-width: 140px;
-  padding: 20px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: rgba(201,169,110,.06);
-}
-.stat-label {
-  display: block;
-  font-size: 10px; letter-spacing: .2em;
-  text-transform: uppercase; color: var(--muted);
-}
-.stat-value {
-  display: block;
-  font-family: 'Playfair Display', serif;
-  font-size: 32px; margin-top: 6px;
-}
-.stat-value.small {
-  font-size: 13px;
-  font-family: 'Inter', sans-serif;
-  margin-top: 8px;
-}
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+</head>
+<body>
 
-/* Buscador */
-#adminSearch {
-  width: 100%; padding: 14px;
-  border: 1px solid var(--border);
-  background: #fff; outline: none;
-  font-size: 14px; margin: 20px 0;
-  font-family: 'Inter', sans-serif;
-  transition: border-color .2s;
-}
-#adminSearch:focus { border-color: var(--gold); }
+  <header class="site-header">
+    <div class="container header-row">
+      <a href="index.html" class="brand">NOVAFLOWIA</a>
+      <span class="eyebrow gold">Painel Admin</span>
+      <button id="logoutBtn" class="icon-btn" aria-label="Sair">🚪</button>
+    </div>
+  </header>
 
-/* Gráfico */
-#chartRegistros { margin-bottom: 24px; }
+  <!-- 🔴 Tela de bloqueio: aparece se não for admin -->
+  <div id="accessDenied" class="container section center" hidden>
+    <h2 class="display">Acesso restrito</h2>
+    <p class="muted">Você precisa estar logado como administrador.</p>
+    <a href="index.html" class="cta" style="margin-top:20px;">Voltar à loja</a>
+  </div>
 
-/* Lista de clientes */
-.admin-client-list {
-  border-top: 1px solid var(--border);
-  margin-top: 8px;
-}
-.admin-client-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 14px 0;
-  border-bottom: 1px solid var(--border);
-  font-size: 13px;
-}
-.admin-client-row .name { font-weight: 500; }
-.admin-client-row .date { color: var(--muted); font-size: 11px; }
+  <!-- 🔵 Conteúdo do dashboard: só aparece após confirmar admin -->
+  <main id="dashboardContent" class="container section" hidden>
+    <header class="section-head" style="text-align:left;">
+      <p class="eyebrow gold">Visão geral</p>
+      <h2>Painel de Clientes</h2>
+    </header>
 
-/* Acceso denegado */
-#accessDenied { padding-top: 80px; }
-#accessDenied .cta { display: inline-block; }
+    <div class="stats-row">
+      <div class="stat-box">
+        <span class="stat-label">Total de clientes</span>
+        <span id="statTotal" class="stat-value">0</span>
+      </div>
+      <div class="stat-box">
+        <span class="stat-label">Último registro</span>
+        <span id="statUltimo" class="stat-value small">—</span>
+      </div>
+    </div>
+
+    <input id="adminSearch" type="search" placeholder="Buscar cliente por nome..." />
+
+    <canvas id="chartRegistros" height="180"></canvas>
+
+    <div id="adminClientList" class="admin-client-list">
+      <p class="muted center">Carregando clientes…</p>
+    </div>
+  </main>
+
+  <div id="toast" class="toast" hidden></div>
+
+  <script src="dashboard.js"></script>
+</body>
+</html>
