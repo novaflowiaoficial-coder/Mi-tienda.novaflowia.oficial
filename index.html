@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+   <!DOCTYPE html>
 <!--
   Novaflowia — versão vanilla (HTML + CSS + JS puro)
   Esta página é a versão didática da loja. Cada elemento abaixo está comentado
@@ -49,17 +49,18 @@
       <a href="/" class="brand">NOVAFLOWIA</a>
 
       <!-- Navegação desktop (escondida no mobile via CSS) -->
-      <nav class="desktop-nav">
-        <a href="#colecao">Coleção</a>
-        <a href="#joias">Joias</a>
-        <a href="#relogios">Relógios</a>
-        <a href="#bolsas">Bolsas</a>
-      </nav>
+    <nav class="desktop-nav">
+      <a href="#colecao" class="category-trigger" data-categoria="todos">Coleção</a>
+      <a href="#colecao" class="category-trigger" data-categoria="joias">Joias</a>
+     <a href="#colecao" class="category-trigger" data-categoria="relogios">Relógios</a>
+     <a href="#colecao" class="category-trigger" data-categoria="bolsas">Bolsas</a>
+     </nav>
 
-      <!-- Ações: busca, conta, sacola -->
+       <!-- Ações: busca, conta, sacola -->
       <div class="header-actions">
         <button id="searchBtn" class="icon-btn" aria-label="Buscar">🔍</button>
         <a id="accountBtn" href="#auth" class="icon-btn" aria-label="Conta">👤</a>
+        <a id="adminBtn" href="dashboard.html" class="icon-btn" aria-label="Painel Admin" hidden>📊</a>
         <button id="cartBtn" class="icon-btn cart-btn" aria-label="Sacola">
           🛍 <span id="cartCount" class="cart-count" hidden>0</span>
         </button>
@@ -83,11 +84,11 @@
         <button class="icon-btn" data-close="menu" aria-label="Fechar">✕</button>
       </header>
       <nav class="drawer-nav">
-        <a href="#colecao" data-close="menu">Coleção</a>
-        <a href="#joias" data-close="menu">Joias</a>
-        <a href="#relogios" data-close="menu">Relógios</a>
-        <a href="#bolsas" data-close="menu">Bolsas</a>
-      </nav>
+         <a href="#colecao" class="category-trigger" data-categoria="todos" data-close="menu">Coleção</a>
+         <a href="#colecao" class="category-trigger" data-categoria="joias" data-close="menu">Joias</a>
+         <a href="#colecao" class="category-trigger" data-categoria="relogios" data-close="menu">Relógios</a>
+          <a href="#colecao" class="category-trigger" data-categoria="bolsas" data-close="menu">Bolsas</a>
+        </nav>
       <div class="drawer-foot">
         <a id="drawerAuthLink" href="#auth" data-close="menu">Entrar / Cadastrar</a>
       </div>
@@ -110,6 +111,13 @@
       <p class="eyebrow gold">Coleção atual</p>
       <h2>Selecionadas para você</h2>
     </header>
+<!-- 🔵 Barra de categorías: clic filtra el grid y hace scroll hasta aquí -->
+  <div class="category-bar">
+    <button class="category-trigger active" data-categoria="todos">Todos</button>
+    <button class="category-trigger" data-categoria="joias">Joias</button>
+   <button class="category-trigger" data-categoria="relogios">Relógios</button>
+   <button class="category-trigger" data-categoria="bolsas">Bolsas</button>
+   </div>
     <div id="productGrid" class="grid">
       <!-- Os <article class="card"> são injetados via JS (renderProducts) -->
       <p id="loadingMsg" class="muted">Carregando produtos…</p>
