@@ -1,0 +1,68 @@
+     /* =========================================================
+   Novaflowia — dashboard.css
+   Estilos exclusivos del panel de administración.
+   ========================================================= */
+
+body { background: var(--bg); }
+
+/* Stats */
+.stats-row {
+  display: flex; gap: 16px;
+  margin: 24px 0; flex-wrap: wrap;
+}
+.stat-box {
+  flex: 1; min-width: 140px;
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: rgba(201,169,110,.06);
+}
+.stat-label {
+  display: block;
+  font-size: 10px; letter-spacing: .2em;
+  text-transform: uppercase; color: var(--muted);
+}
+.stat-value {
+  display: block;
+  font-family: 'Playfair Display', serif;
+  font-size: 32px; margin-top: 6px;
+}
+.stat-value.small {
+  font-size: 13px;
+  font-family: 'Inter', sans-serif;
+  margin-top: 8px;
+}
+
+/* Buscador */
+#adminSearch {
+  width: 100%; padding: 14px;
+  border: 1px solid var(--border);
+  background: #fff; outline: none;
+  font-size: 14px; margin: 20px 0;
+  font-family: 'Inter', sans-serif;
+  transition: border-color .2s;
+}
+#adminSearch:focus { border-color: var(--gold); }
+
+/* Gráfico */
+#chartRegistros { margin-bottom: 24px; }
+
+/* Lista de clientes */
+.admin-client-list {
+  border-top: 1px solid var(--border);
+  margin-top: 8px;
+}
+.admin-client-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+.admin-client-row .name { font-weight: 500; }
+.admin-client-row .date { color: var(--muted); font-size: 11px; }
+
+/* Acceso denegado */
+#accessDenied { padding-top: 80px; }
+#accessDenied .cta { display: inline-block; }
