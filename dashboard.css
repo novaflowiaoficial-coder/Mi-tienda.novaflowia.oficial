@@ -1,21 +1,39 @@
-    /* =========================================================
+   /* =========================================================
    Novaflowia — dashboard.css
-   Estilos exclusivos del panel de administración.
+   Estilos exclusivos do painel de administração.
+   Depende das variáveis definidas em style.css (:root),
+   por isso style.css deve ser carregado ANTES deste arquivo.
    ========================================================= */
 
-body { background: var(--bg); }
+.admin-body { background: var(--bg); min-height: 100vh; }
 
-/* Stats */
+.admin-tag { flex: 1; text-align: center; }
+
+.admin-main { max-width: 720px; }
+
+.admin-head { text-align: left; margin-bottom: 32px; }
+.admin-head h1 { font-size: clamp(24px, 4vw, 34px); margin-top: 6px; }
+
+/* Acesso negado */
+.admin-denied {
+  padding: 80px 0;
+  text-align: center;
+}
+.admin-denied h1 { font-size: clamp(22px, 4vw, 30px); margin: 12px 0 16px; }
+.admin-denied .cta { margin-top: 24px; }
+
+/* Cards de estatística */
 .stats-row {
   display: flex; gap: 16px;
-  margin: 24px 0; flex-wrap: wrap;
+  margin: 0 0 24px;
+  flex-wrap: wrap;
 }
 .stat-box {
   flex: 1; min-width: 140px;
   padding: 20px;
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  background: rgba(201,169,110,.06);
+  background: rgba(201, 169, 110, .06);
 }
 .stat-label {
   display: block;
@@ -38,20 +56,17 @@ body { background: var(--bg); }
   width: 100%; padding: 14px;
   border: 1px solid var(--border);
   background: #fff; outline: none;
-  font-size: 14px; margin: 20px 0;
+  font-size: 14px; margin: 0 0 24px;
   font-family: 'Inter', sans-serif;
   transition: border-color .2s;
 }
 #adminSearch:focus { border-color: var(--gold); }
 
 /* Gráfico */
-#chartRegistros { margin-bottom: 24px; }
+#chartRegistros { margin-bottom: 32px; max-width: 100%; }
 
 /* Lista de clientes */
-.admin-client-list {
-  border-top: 1px solid var(--border);
-  margin-top: 8px;
-}
+.admin-client-list { border-top: 1px solid var(--border); }
 .admin-client-row {
   display: flex;
   justify-content: space-between;
@@ -63,6 +78,11 @@ body { background: var(--bg); }
 .admin-client-row .name { font-weight: 500; }
 .admin-client-row .date { color: var(--muted); font-size: 11px; }
 
-/* Acceso denegado */
-#accessDenied { padding-top: 80px; }
-#accessDenied .cta { display: inline-block; }
+.admin-logout {
+  max-width: 200px;
+  margin-top: 32px;
+  background: transparent;
+  color: var(--danger);
+  border: 1px solid var(--danger);
+}
+.admin-logout:hover { background: var(--danger); color: #fff; }
