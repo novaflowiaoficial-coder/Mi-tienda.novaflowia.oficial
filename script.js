@@ -1,4 +1,4 @@
-/* =========================================================
+  /* =========================================================
    Novaflowia — script.js  (versão vanilla, comentada)
 
    Responsabilidades:
@@ -11,13 +11,14 @@
    IMPORTANTE — substitua estas duas constantes pelos seus valores:
    (encontre em Lovable Cloud → Backend → Connection Info).
    ========================================================= */
- if (!window.novaflowiaLoaded) {
+   if (!window.novaflowiaLoaded) {
 window.novaflowiaLoaded = true;
 const SUPABASE_URL = 'https://myfnhisnxlkagusgjhwt.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im15Zm5oaXNueGxrYWd1c2dqaHd0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NjE5NjYsImV4cCI6MjA5ODEzNzk2Nn0.qkoYXxUOQpRRJTPZhEJ5GcR0S57WbMA6z-pDQiYQWnk';   // chave "anon / publishable"
 
 // Cria o cliente. O `?.` evita crash caso o script falhe a carregar do CDN.
-const supabase = window.supabase?.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+window.supabase_client = window.supabase_client || window.supabase?.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const supabase = window.supabase_client;
 
 /* ---------- Helpers ---------- */
 const $  = (sel, root = document) => root.querySelector(sel);
@@ -134,6 +135,36 @@ $('#cartItems').addEventListener('click', (e) => {
 /* =========================================================
    2) PRODUTOS — leitura da tabela `produtos`
    ========================================================= */
+// 🟡 Guardamos todos los productos en memoria para filtrar sin pedir de nuevo al Supabase
+let allProducts = [];
+let currentCategoria = 'todos';
+
+// 🟡 Quita acentos y pasa a minúsculas, así "Relógios" === "relogios"
+function normalizar(txt) {
+  return (txt || '').toString().toLowerCase().trim()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+
+function applyFilter(categoria) {
+  currentCategoria = categoria;
+  $$('.category-trigger').forEach(btn =>
+    btn.classList.toggle('active', btn.dataset.categoria === categoria)
+  );
+  const lista = categoria === 'todos'
+    ? allProducts
+    : allProducts.filter(p => normalizar(p.categoria) === normalizar(categoria));
+  renderProducts(lista);
+}
+
+// 🟡 Delegación: CUALQUIER .category-trigger (header, drawer, barra) filtra y hace scroll
+document.addEventListener('click', (e) => {
+  const trig = e.target.closest('.category-trigger');
+  if (!trig) return;
+  e.preventDefault();
+  applyFilter(trig.dataset.categoria);
+  closeDrawer('menu');
+  $('#colecao').scrollIntoView({ behavior: 'smooth' });
+});
 async function loadProducts() {
   const grid = $('#productGrid');
   if (!supabase) {
@@ -153,7 +184,8 @@ async function loadProducts() {
     grid.innerHTML = '<p class="muted">Nenhum produto disponível ainda.</p>';
     return;
   }
-  renderProducts(data);
+    allProducts = data;
+    applyFilter(currentCategoria);
 }
 
 function renderProducts(list) {
@@ -162,7 +194,10 @@ function renderProducts(list) {
     return `
       <article class="card" data-id="${p.id}">
         <div class="card-media">
-          ${p.imagem_url ? `<img src="${p.imagem_url}" alt="${p.nome}" loading="lazy" />` : ''}
+          ${p.imagem_url
+        ? `<img src="${p.imagem_url}" alt="${p.nome}" loading="lazy"
+       onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'no-image-icon',textContent:'🛍'}))" />`
+  : `<div class="no-image-icon">🛍</div>`}
           <button class="card-add" data-add="${p.id}">Adicionar à sacola</button>
         </div>
         <div class="card-body">
@@ -270,6 +305,16 @@ $('#signupForm').addEventListener('submit', async (e) => {
   if (data.user) {
     await supabase.from('perfis').upsert({ id: data.user.id, nome: f.get('nome') });
   }
+   await fetch("https://hook.us2.make.com/3jp3bxh2ohc07eb9cc7q1tqd4m2q1tn3", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    nombre: f.get('nome'),
+    email: f.get('email')
+  })
+});
   toast('Conta criada! Redirecionando…');
   closeDrawer('auth');
   refreshAuthUI();
@@ -337,4 +382,12 @@ updateCartCount();
 renderCart();
 loadProducts();
 refreshAuthUI();
- }
+async function checkAdmin() {
+  const { data: u } = await supabase.auth.getUser();
+  if (!u.user) { $('#adminBtn').hidden = true; return; }
+  const { data: perfil } = await supabase.from('perfis').select('is_admin').eq('id', u.user.id).single();
+  $('#adminBtn').hidden = !perfil?.is_admin;
+}
+checkAdmin();
+     }
+                      
