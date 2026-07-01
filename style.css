@@ -1,4 +1,4 @@
-/* =========================================================
+  /* =========================================================
    Novaflowia — style.css
    Paleta luxuosa: Ônix (#0d0d0f), Marfim (#f6f1ea), Dourado champanhe (#c9a96e).
    Tipografia: Playfair Display (títulos) + Inter (corpo).
@@ -20,7 +20,7 @@
 
 /* ---------- Reset enxuto ---------- */
 * { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { height: 100%; }
+   html, body { height: 100%; overflow-x: hidden; width: 100%; } /* 🟡 evita que algo "se salga" y empuje el layout */
 body {
   font-family: 'Inter', system-ui, sans-serif;
   background: var(--bg);
@@ -34,7 +34,7 @@ button { font: inherit; cursor: pointer; border: none; background: none; color: 
 input { font: inherit; }
 
 /* Utilitários */
-.container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 16px; }
+.container { width: 95%; max-width: 1200px; margin: 0 auto; padding: 0 16px; }
 @media (min-width: 768px) { .container { padding: 0 32px; } }
 
 .display { font-family: 'Playfair Display', serif; font-weight: 400; letter-spacing: .01em; }
@@ -154,7 +154,7 @@ input { font: inherit; }
 @media (min-width: 1024px) { .grid { grid-template-columns: repeat(4, 1fr); gap: 40px; } }
 
 /* ---------- CARD de produto ---------- */
-.card { display: flex; flex-direction: column; }
+ .card { display: flex; flex-direction: column; min-width: 0; } /* 🔴 evita que la imagen empuje el ancho de la columna del grid */
 .card-media {
   position: relative;
   aspect-ratio: 4 / 5;
@@ -277,7 +277,7 @@ input { font: inherit; }
 .tab.active { color: var(--fg); border-bottom-color: var(--gold); }
 
 .tab-panel { display: flex; flex-direction: column; gap: 14px; }
-.tab-panel[hidden] { display: none; }   /* 🟣 fuerza que hidden oculte cada formulario */
+  .tab-panel[hidden] { display: none; }   /* 🟣 fuerza que hidden oculte cada formulario */
 .tab-panel h2 { font-size: 22px; margin-bottom: 4px; }
 .tab-panel input {
   padding: 14px;
@@ -304,3 +304,42 @@ input { font: inherit; }
 /* ---------- FOOTER ---------- */
 .site-footer { border-top: 1px solid var(--border); padding: 40px 0; margin-top: 80px; }
 .site-footer .container { display: flex; flex-direction: column; gap: 6px; align-items: center; text-align: center; }
+/* 🟣 Barra de categorías: pills con scroll horizontal en mobile */
+.category-bar {
+  display: flex; gap: 10px; overflow-x: auto;
+  padding-bottom: 16px; margin-bottom: 32px;
+  border-bottom: 1px solid var(--border);
+  -webkit-overflow-scrolling: touch;
+}
+.category-bar::-webkit-scrollbar { display: none; }
+.category-trigger {
+  flex-shrink: 0;
+  padding: 10px 20px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 11px; letter-spacing: .15em; text-transform: uppercase;
+  color: var(--muted);
+  transition: all .2s;
+}
+.category-trigger.active,
+.category-trigger:hover { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+
+/* 🟣 Ícono centrado cuando NO hay imagen (en vez del ícono roto pegado a la izquierda) */
+.no-image-icon {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 36px; background: var(--border); color: var(--muted);
+}
+/* 🔴 Evita que el logo "NOVAFLOWIA" empuje el ancho del header en pantallas angostas */
+.brand {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 150px;
+}
+@media (min-width: 768px) {
+  .brand { max-width: none; } /* en desktop hay espacio de sobra, se ve completo */
+}
+/* 🔴 Fuerza que adminBtn esté oculto hasta que JS confirme is_admin */
+#adminBtn[hidden] { display: none !important; }
