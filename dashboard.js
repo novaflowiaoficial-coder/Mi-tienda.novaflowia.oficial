@@ -1,4 +1,4 @@
-    /* =========================================================
+   /* =========================================================
    Novaflowia — dashboard.js
    Painel de administração: lista de clientes + gráfico de registros.
 
@@ -150,5 +150,4 @@ supabase.auth.onAuthStateChange((event) => {
   if (event === 'SIGNED_IN') checkAccess();
 });
 
-    }
-    
+}
