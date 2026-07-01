@@ -1,58 +1,77 @@
-     <!DOCTYPE html>
+      <!DOCTYPE html>
+<!--
+  Novaflowia — Painel Admin
+  Reaproveita a mesma paleta e tipografia da loja (style.css) e adiciona
+  estilos exclusivos do painel em dashboard.css.
+-->
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Painel Admin — Novaflowia</title>
+  <meta name="robots" content="noindex, nofollow" />
 
+  <!-- Mesmas fontes da loja -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- Reaproveita as variáveis/design tokens da loja + estilos próprios do painel -->
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="dashboard.css" />
 
+  <!-- Bibliotecas necessárias -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
 </head>
-<body>
+
+<body class="admin-body">
 
   <header class="site-header">
     <div class="container header-row">
       <a href="index.html" class="brand">NOVAFLOWIA</a>
-      <span class="eyebrow gold">Painel Admin</span>
-      <button id="logoutBtn" class="icon-btn" aria-label="Sair">🚪</button>
+      <span class="eyebrow gold admin-tag">Painel Admin</span>
+      <a href="index.html" class="icon-btn" aria-label="Voltar à loja">🏠</a>
     </div>
   </header>
 
-  <!-- 🔴 Tela de bloqueio: aparece se não for admin -->
-  <div id="accessDenied" class="container section center" hidden>
-    <h2 class="display">Acesso restrito</h2>
-    <p class="muted">Você precisa estar logado como administrador.</p>
-    <a href="index.html" class="cta" style="margin-top:20px;">Voltar à loja</a>
-  </div>
+  <main class="container section admin-main">
 
-  <!-- 🔵 Conteúdo do dashboard: só aparece após confirmar admin -->
-  <main id="dashboardContent" class="container section" hidden>
-    <header class="section-head" style="text-align:left;">
-      <p class="eyebrow gold">Visão geral</p>
-      <h2>Painel de Clientes</h2>
-    </header>
+    <!-- ACESSO NEGADO — visível só se o usuário não for admin -->
+    <section id="accessDenied" class="admin-denied" hidden>
+      <p class="eyebrow gold">Acesso restrito</p>
+      <h1 class="display">Esta área é somente para administradores</h1>
+      <p class="muted">Faça login com uma conta autorizada para continuar.</p>
+      <a href="index.html" class="cta">Voltar à loja</a>
+    </section>
 
-    <div class="stats-row">
-      <div class="stat-box">
-        <span class="stat-label">Total de clientes</span>
-        <span id="statTotal" class="stat-value">0</span>
+    <!-- DASHBOARD — visível só depois de confirmar is_admin -->
+    <section id="dashboardContent" hidden>
+      <header class="section-head admin-head">
+        <p class="eyebrow gold">Novaflowia</p>
+        <h1 class="display">Painel de clientes</h1>
+      </header>
+
+      <div class="stats-row">
+        <div class="stat-box">
+          <span class="stat-label">Total de clientes</span>
+          <span id="statTotal" class="stat-value">0</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">Último registro</span>
+          <span id="statUltimo" class="stat-value small">—</span>
+        </div>
       </div>
-      <div class="stat-box">
-        <span class="stat-label">Último registro</span>
-        <span id="statUltimo" class="stat-value small">—</span>
-      </div>
-    </div>
 
-    <input id="adminSearch" type="search" placeholder="Buscar cliente por nome..." />
+      <input id="adminSearch" type="search" placeholder="Buscar cliente por nome..." />
 
-    <canvas id="chartRegistros" height="180"></canvas>
+      <canvas id="chartRegistros" height="90"></canvas>
 
-    <div id="adminClientList" class="admin-client-list">
-      <p class="muted center">Carregando clientes…</p>
-    </div>
+      <div id="adminClientList" class="admin-client-list"></div>
+
+      <button id="logoutBtn" class="btn-primary admin-logout">Sair</button>
+    </section>
+
   </main>
 
   <div id="toast" class="toast" hidden></div>
